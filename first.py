@@ -33,8 +33,8 @@ class MyApplication(QWidget):
         """)
         button1.move(100,150)
 
-        self.mainbutton = QPushButton(text="Pause",parent=self)
-        self.mainbutton.setStyleSheet("""
+        self.PauseBtn = QPushButton(text="Pause",parent=self)
+        self.PauseBtn.setStyleSheet("""
             QPushButton{
             font-size : 18px;
             width : 100px;
@@ -48,8 +48,26 @@ class MyApplication(QWidget):
                 background-color: blue;
             }
         """)
-        self.mainbutton.move(200,200)
-        self.mainbutton.clicked.connect(self.pauseaud)
+        self.PauseBtn.move(200,200)
+        self.PauseBtn.clicked.connect(self.pauseaud)
+        self.Resume = QPushButton(text="Resume",parent=self)
+        self.Resume.setStyleSheet("""
+            QPushButton{
+            font-size : 18px;
+            width : 100px;
+            background-color: black;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 10px;
+            }
+            QPushButton:hover{
+                background-color: blue;
+            }
+        """)
+        self.Resume.move(200,200)
+        self.Resume.hide()
+        self.Resume.clicked.connect(self.continueaud)
         self.setGeometry(100,200,500,400)
         self.setWindowTitle("Music App")
         self.setStyleSheet("""
@@ -58,16 +76,12 @@ class MyApplication(QWidget):
 
     def continueaud(self):
         mixer.music.unpause()
-        self.mainbutton.setText("Pause")
-        self.mainbutton.clicked.connect(self.pauseaud)
-
-
+        self.Resume.hide()
     def pauseaud(self):
         mixer.music.pause()
-        self.mainbutton.setText("Play")
-        self.mainbutton.clicked.connect(self.continueaud)
-    def openfile(self):
+        self.Resume.show()
         
+    def openfile(self):
         self.openfiledir = QFileDialog(self).getOpenFileName()[0]
         mixer.init()
         mixer.music.load(self.openfiledir)
