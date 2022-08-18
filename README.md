@@ -11,3 +11,6 @@ Update 2.0:
  
 Update 3.0:
    Minor tweaks to UI has been made. Check the description of update-3.0 branch to know more.
+
+Update 4.0:
+   Major tweaks to UI has been made. Check the description of update-4.0 branch to know more.
