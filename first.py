@@ -1,8 +1,9 @@
 from pydoc import plain
+from struct import unpack_from
 import sys
 from PySide6.QtWidgets import *
 from PySide6.QtGui import *
-from PySide6.QtCore import QPropertyAnimation,QPoint,QSize
+from PySide6.QtCore import QPropertyAnimation,QPoint,QSize,QTimer
 from just_playback import Playback
 from pygame import mixer,error
 
@@ -46,7 +47,7 @@ class MyApplication(QWidget):
         #Pause button configuration
         # self.PauseBtn = QPushButton(text="Pause",parent=self)
         self.PauseBtn = QPushButton(parent=self)
-        self.pixmap2 = QPixmap("pause.png")
+        self.pixmap2 = QPixmap("pause-64.png")
         self.PauseBtn.setIcon(self.pixmap2)
         self.PauseBtn.setStyleSheet("""
             QPushButton{
@@ -70,7 +71,7 @@ class MyApplication(QWidget):
         #Resume button configuration
         # self.Resume = QPushButton(text="Resume",parent=self)
         self.Resume = QPushButton(parent=self)
-        self.pixmap1 = QPixmap("play.png")
+        self.pixmap1 = QPixmap("play-64.png")
         self.Resume.setIcon(self.pixmap1)
         self.Resume.setStyleSheet("""
             QPushButton{
@@ -141,10 +142,36 @@ class MyApplication(QWidget):
         """)
         self.timeline.move(0,230)
         self.timeline.resize(0,10)
-        # self.anim1 = QPropertyAnimation(self.timeline,b"size")
-        # self.anim1.setEndValue(QSize(200,10))
-        # self.anim1.setDuration(self.playback.duration * 1000)
+        
+        #timestamp:
+        self.totalduration = QLabel(self,text= f"{int(self.playback.duration/60)}:{self.playback.duration%60}")
+        self.totalduration.setStyleSheet("""
+            background-color: black;
+            color: white;
+            font-size: 12px;
+            font-family: Candara;
+        """)
+        self.totalduration.move(490,250)
 
+        self.timestamp = QLabel(self, text= "0:00")
+        self.timestamp.setStyleSheet("""
+            background-color: black;
+            width: 150px;
+            color: white;
+            font-size: 12px;
+            font-family: Candara;
+        """)
+        self.timestamp.move(10,250)
+
+        #logo
+        self.frame = QLabel(self)
+        self.frame.resize(90,90)
+        self.frame.setStyleSheet("""
+            background-color: rgba(255,0,0,1)
+        """)
+        self.frame.move(220,100)
+        self.pixmap3 = QPixmap("music-64.png")
+        self.frame.setPixmap(self.pixmap3)
         #Application window allingment.
         self.setGeometry(100,200,500,420)
         self.setMaximumSize(530,400)
@@ -153,14 +180,15 @@ class MyApplication(QWidget):
         self.setWindowIcon(self.windowico)
         self.setStyleSheet("""
             background-color: black;
+            border: none;
+            border-radius: 10px;
         """)
+        
 
     def movebackward(self):
         self.playback.seek(self.playback.curr_pos - 10.0)
         self.anim1.setCurrentTime(self.anim1.currentTime() - 10000)
-
     def moveforward(self):
-
         self.playback.seek(self.playback.curr_pos + 10.0)
         self.anim1.setCurrentTime( self.anim1.currentTime() + 10000)
     def continueaud(self):
@@ -169,6 +197,7 @@ class MyApplication(QWidget):
             self.playback.resume()
             self.Resume.hide()
             self.anim1.resume()
+            self.timer.timeout.connect(self.update_time)
         except error :
             print("Please select a music file!")
     
@@ -178,6 +207,7 @@ class MyApplication(QWidget):
             self.playback.pause()
             self.Resume.show()
             self.anim1.pause()
+            self.timer.timeout.disconnect()
         except:
             print("Please select a music file!")
 
@@ -199,8 +229,21 @@ class MyApplication(QWidget):
         self.anim1.setDuration(self.playback.duration * 1000)
         self.anim1.start()
         self.anim1.setLoopCount(100) #selecting a high value just for safety !
+        self.totalduration.setText(f"{int(self.playback.duration/60)}:{int(self.playback.duration%60)}")
+        self.minute = 0
+        self.second = 0
+        self.timer = QTimer()
+        self.timer.setInterval(1000)
+        self.timestamp.setText(f"{self.minute}:{self.second}")
+        self.timer.timeout.connect(self.update_time)
+        self.timer.start()
         print(f"Currently playing {self.openfiledir}")
- 
+    
+    def update_time(self):
+        
+        self.minute = int(self.playback.curr_pos/60)
+        self.second = int(self.playback.curr_pos%60)
+        self.timestamp.setText(f"{self.minute}:{self.second}")
 
 #creating a basic application
 app = QApplication([])
