@@ -10,6 +10,7 @@ class MyApplication(QWidget):
     def __init__(self):
         super().__init__()
         self.playback = Playback()
+        self.windowico = QPixmap("note.png")
         #lable configurations
         text1 = QLabel(self,text="MUSIC")
         text1.setStyleSheet("""
@@ -43,43 +44,51 @@ class MyApplication(QWidget):
         button1.move(10,350)
 
         #Pause button configuration
-        self.PauseBtn = QPushButton(text="Pause",parent=self)
+        # self.PauseBtn = QPushButton(text="Pause",parent=self)
+        self.PauseBtn = QPushButton(parent=self)
+        self.pixmap2 = QPixmap("pause.png")
+        self.PauseBtn.setIcon(self.pixmap2)
         self.PauseBtn.setStyleSheet("""
             QPushButton{
             font-size : 18px;
-            width : 100px;
+            width : 50px;
+            height: 50px;
             background-color: Red;
             color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: 25%;
             font-family: Candara;
-            padding: 10px;
+            padding: 0px;
             }
             QPushButton:hover{
                 background-color: blue;
             }
         """)
-        self.PauseBtn.move(200,270)
+        self.PauseBtn.move(238,270)
         self.PauseBtn.clicked.connect(self.pauseaud)
 
         #Resume button configuration
-        self.Resume = QPushButton(text="Resume",parent=self)
+        # self.Resume = QPushButton(text="Resume",parent=self)
+        self.Resume = QPushButton(parent=self)
+        self.pixmap1 = QPixmap("play.png")
+        self.Resume.setIcon(self.pixmap1)
         self.Resume.setStyleSheet("""
             QPushButton{
             font-size : 18px;
-            width : 100px;
+            width : 50px;
+            height: 50px;
             background-color: Red;
             color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: 25%;
             font-family: Candara;
-            padding: 10px;
+            padding: 0px;
             }
             QPushButton:hover{
                 background-color: blue;
             }
         """)
-        self.Resume.move(200,270)
+        self.Resume.move(238,270)
         self.Resume.hide()
         self.Resume.clicked.connect(self.continueaud)
 
@@ -141,6 +150,7 @@ class MyApplication(QWidget):
         self.setMaximumSize(530,400)
         self.setMinimumSize(530,400)
         self.setWindowTitle("Music App")
+        self.setWindowIcon(self.windowico)
         self.setStyleSheet("""
             background-color: black;
         """)
@@ -176,6 +186,7 @@ class MyApplication(QWidget):
         self.filedil = QFileDialog(self)
         self.openfiledir = self.filedil.getOpenFileName(options=QFileDialog.DontUseNativeDialog)[0]
         self.filedil.close()
+        self.Resume.hide()
         self.playback = Playback()
         if(self.playback.active):
             self.playback.stop()
