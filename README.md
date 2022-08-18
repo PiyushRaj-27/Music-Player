@@ -1,8 +1,12 @@
 # Music-Player
 A basic GUI Music player using PySide6, pygame. However needs some more features and optimization.
+
 Current Version: 4.0 Alpha
+
 Current status: Alpha
+
 Beta Release date: ??
+
 Full release date: ??
 
 
