@@ -1,209 +1,129 @@
-from pydoc import plain
-from struct import unpack_from
+
+#Basic Imports
+from cgitb import text
 import sys
 from PySide6.QtWidgets import *
 from PySide6.QtGui import *
 from PySide6.QtCore import QPropertyAnimation,QPoint,QSize,QTimer
 from just_playback import Playback
-from pygame import mixer,error
+# from pygame import mixer,error
 
+#the main class
 class MyApplication(QWidget):
     def __init__(self):
         super().__init__()
+
+        #playback instance
         self.playback = Playback()
-        self.windowico = QPixmap("note.png")
-        #lable configurations
+        #currently opened file directory
+        self.openfiledir = ""
+        #previouly opened file directory
+        self.prev = ""
+
+        #Default lable configuration
         text1 = QLabel(self,text="MUSIC")
-        text1.setStyleSheet("""
-            font-size: 30px;
-            font-weight: bolder;
-            font-family: Candara;
-            color: white;
-        """)
+        text1.setObjectName("txt1")
         text1.move(10,10)
 
-        #file directory of opened file!
-        self.openfiledir = ""
-
-        #button1 configuration. Not declared as a class property, rather a local variable in this method.
-        button1 = QPushButton(text="Select file", parent=self)
+        #select file button configuration
+        button1 = QPushButton(text="  Select File",parent=self)
+        pixmap4 = QPixmap("music-file.png")
         button1.clicked.connect(self.openfile)
-        button1.setStyleSheet("""
-            QPushButton{
-            font-size : 12px;
-            background-color: Red;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 10px;
-            font-family: Candara;
-            }
-            QPushButton:hover{
-                background-color: blue;
-            }
-        """)
+        button1.setIcon(pixmap4)
+        button1.setObjectName("filebtn")
         button1.move(10,350)
 
         #Pause button configuration
-        # self.PauseBtn = QPushButton(text="Pause",parent=self)
         self.PauseBtn = QPushButton(parent=self)
         self.pixmap2 = QPixmap("pause-64.png")
         self.PauseBtn.setIcon(self.pixmap2)
-        self.PauseBtn.setStyleSheet("""
-            QPushButton{
-            font-size : 18px;
-            width : 50px;
-            height: 50px;
-            background-color: Red;
-            color: white;
-            border: none;
-            border-radius: 25%;
-            font-family: Candara;
-            padding: 0px;
-            }
-            QPushButton:hover{
-                background-color: blue;
-            }
-        """)
+        self.PauseBtn.setObjectName("Resume")
         self.PauseBtn.move(238,270)
         self.PauseBtn.clicked.connect(self.pauseaud)
 
         #Resume button configuration
-        # self.Resume = QPushButton(text="Resume",parent=self)
         self.Resume = QPushButton(parent=self)
         self.pixmap1 = QPixmap("play-64.png")
         self.Resume.setIcon(self.pixmap1)
-        self.Resume.setStyleSheet("""
-            QPushButton{
-            font-size : 18px;
-            width : 50px;
-            height: 50px;
-            background-color: Red;
-            color: white;
-            border: none;
-            border-radius: 25%;
-            font-family: Candara;
-            padding: 0px;
-            }
-            QPushButton:hover{
-                background-color: blue;
-            }
-        """)
+        self.Resume.setObjectName("Resume")
         self.Resume.move(238,270)
         self.Resume.hide()
         self.Resume.clicked.connect(self.continueaud)
 
-        #seek forward button
-
+        #seek forward button configuration
         self.seekfor = QPushButton(text=">>",parent=self)
-        self.seekfor.setStyleSheet("""
-            QPushButton{
-            font-size : 18px;
-            width : 50px;
-            background-color: Red;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-family: Candara;
-            padding: 10px;
-            }
-            QPushButton:hover{
-                background-color: blue;
-            }
-        """)
+        self.seekfor.setObjectName("seekf")
         self.seekfor.move(350,270)
         self.seekfor.clicked.connect(self.moveforward)
 
-        #seek backward button
-
+        #seek backward button configuration
         self.seekback = QPushButton(text="<<", parent=self)
-        self.seekback.setStyleSheet("""
-            QPushButton{
-            font-size : 18px;
-            width : 50px;
-            background-color: Red;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-family: Candara;
-            padding: 10px;
-            }
-            QPushButton:hover{
-                background-color: blue;
-            }
-        """)
-        self.seekback.move(100, 270)
+        self.seekback.setObjectName("seekb")
+        self.seekback.move(125, 270)
         self.seekback.clicked.connect(self.movebackward)
 
-        #Timeline!
+        #Timeline configuration
+        ghost_timeline = QWidget(self)
+        ghost_timeline.setObjectName("gsttime")
+        ghost_timeline.resize(530,10)
+        ghost_timeline.move(0,230)
         self.timeline = QWidget(self)
-        self.timeline.setStyleSheet("""
-            background-color : red;
-        """)
+        self.timeline.setObjectName("timeline")
         self.timeline.move(0,230)
         self.timeline.resize(0,10)
         
-        #timestamp:
+        #Total duration lable configuration:
         self.totalduration = QLabel(self,text= f"{int(self.playback.duration/60)}:{self.playback.duration%60}")
-        self.totalduration.setStyleSheet("""
-            background-color: black;
-            color: white;
-            font-size: 12px;
-            font-family: Candara;
-        """)
+        self.totalduration.setObjectName("totaldur")
         self.totalduration.move(490,250)
 
+        #Timestamp lable configuration
         self.timestamp = QLabel(self, text= "0:00")
-        self.timestamp.setStyleSheet("""
-            background-color: black;
-            width: 150px;
-            color: white;
-            font-size: 12px;
-            font-family: Candara;
-        """)
+        self.timestamp.setObjectName("timestamp")
         self.timestamp.move(10,250)
 
-        #logo
+        #Central logo configuration
         self.frame = QLabel(self)
-        self.frame.resize(90,90)
-        self.frame.setStyleSheet("""
-            background-color: rgba(255,0,0,1)
-        """)
-        self.frame.move(220,100)
-        self.pixmap3 = QPixmap("music-64.png")
+        self.frame.resize(120,120)
+        self.frame.setObjectName("frame")
+        self.frame.move(200,70)
+        self.pixmap3 = QPixmap("music.png")
+        self.pixmap3 = self.pixmap3.scaledToWidth(120)
         self.frame.setPixmap(self.pixmap3)
+
         #Application window allingment.
         self.setGeometry(100,200,500,420)
         self.setMaximumSize(530,400)
         self.setMinimumSize(530,400)
         self.setWindowTitle("Music App")
+        self.windowico = QPixmap("note.png")
         self.setWindowIcon(self.windowico)
-        self.setStyleSheet("""
-            background-color: black;
-            border: none;
-            border-radius: 10px;
-        """)
-        
+        self.setObjectName("main")
 
+
+    #seek forward:
     def movebackward(self):
         self.playback.seek(self.playback.curr_pos - 10.0)
         self.anim1.setCurrentTime(self.anim1.currentTime() - 10000)
+
+    #seek backward:
     def moveforward(self):
         self.playback.seek(self.playback.curr_pos + 10.0)
         self.anim1.setCurrentTime( self.anim1.currentTime() + 10000)
+
+    #Resume/Continue audio
     def continueaud(self):
         try:
-            
             self.playback.resume()
             self.Resume.hide()
             self.anim1.resume()
             self.timer.timeout.connect(self.update_time)
-        except error :
+        except:
             print("Please select a music file!")
     
+    #pause Audio
     def pauseaud(self):
         try:
-            
             self.playback.pause()
             self.Resume.show()
             self.anim1.pause()
@@ -211,25 +131,44 @@ class MyApplication(QWidget):
         except:
             print("Please select a music file!")
 
-
+    #Select file
     def openfile(self):
+
+        #setting previous file directory
+        if self.openfiledir != "":
+            self.prev = self.openfiledir
+
+        #Open file dialog
         self.filedil = QFileDialog(self)
         self.openfiledir = self.filedil.getOpenFileName(options=QFileDialog.DontUseNativeDialog)[0]
         self.filedil.close()
-        self.Resume.hide()
-        self.playback = Playback()
+        self.Resume.hide() #Hinding the resume button by default as this is not required during play!
+
+        #stoping previous playback
         if(self.playback.active):
             self.playback.stop()
+        
+        #loading music file and running
         self.playback.load_file(path_to_file=self.openfiledir)
         self.playback.play()
         self.playback.loop_at_end(True)
+
+        #setting the initial value of previous file directory
+        if self.prev == "":
+            self.prev = self.openfiledir
+        
+        #Timeline animation
         self.timeline.resize(0,10)
         self.anim1 = QPropertyAnimation(self.timeline,b"size")
         self.anim1.setEndValue(QSize(530,10))
         self.anim1.setDuration(self.playback.duration * 1000)
         self.anim1.start()
         self.anim1.setLoopCount(100) #selecting a high value just for safety !
+
+        #Totalduration lable setup
         self.totalduration.setText(f"{int(self.playback.duration/60)}:{int(self.playback.duration%60)}")
+
+        #Timestamp lable setup/updation
         self.minute = 0
         self.second = 0
         self.timer = QTimer()
@@ -237,16 +176,22 @@ class MyApplication(QWidget):
         self.timestamp.setText(f"{self.minute}:{self.second}")
         self.timer.timeout.connect(self.update_time)
         self.timer.start()
-        print(f"Currently playing {self.openfiledir}")
+
+        print(self.prev) #now we just need to use this previous file to load the previous file separately. Maybe a hard task!
+        #TODO: Leaving this to future me, to implement the previous music with the previous button.
+        print(f"Currently playing {self.openfiledir}") #for testing
     
+    #update Timestamp lable
     def update_time(self):
-        
         self.minute = int(self.playback.curr_pos/60)
         self.second = int(self.playback.curr_pos%60)
         self.timestamp.setText(f"{self.minute}:{self.second}")
 
-#creating a basic application
+#creating an instance of application
 app = QApplication([])
 myapp = MyApplication()
 myapp.show()
+with open("style.qss","r") as f:
+    _style = f.read()
+    app.setStyleSheet(_style)
 app.exec()
