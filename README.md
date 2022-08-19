@@ -29,5 +29,4 @@ Update 5.0 alpha:
     
 Screenshots:    
 ![player](https://user-images.githubusercontent.com/99380058/185545130-18ee7e71-0cae-49b9-b119-37b2ce62f88c.png)
-![player-playing](https://user-images.githubusercontent.com/99380058/185545187-a27f27fc-97fd-4dae-aaca-46dec3bfebae.png)
-
+![player-playing](https://user-images.githubusercontent.com/99380058/185545286-b0cea32a-c7f8-4ba3-a38e-bf5556ea3a41.png)
