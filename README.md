@@ -32,4 +32,5 @@ Screenshots:
 1. Static Player
 
 ![player-playing](https://user-images.githubusercontent.com/99380058/185545286-b0cea32a-c7f8-4ba3-a38e-bf5556ea3a41.png)
+
 2. Active Player
