@@ -1,0 +1,93 @@
+#main{
+    background-color: #0c0032;
+    border: none;
+    border-radius: 10px;
+}
+#frame{
+    background-color: rgba(255,0,0,1);
+    border: none;
+    border-radius: 10px;
+}
+#timestamp{
+    background-color: #0c0032;
+    width: 150px;
+    color: white;
+    font-size: 12px;
+    font-family: Candara;
+}
+#totaldur{
+    background-color: #0c0032;
+    color: white;
+    font-size: 12px;
+    font-family: Candara;
+}
+#timeline{
+    background-color : #3500D3;
+}
+#gsttime{
+    background-color: #240090;
+}
+#seekb{
+    font-size : 18px;
+    max-width : 50px;
+    min-height: 50px;
+    background-color: #3500D3;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-family: Candara;
+    border-radius: 25%;
+}
+#seekb:hover{
+    background-color: blue;
+}
+#seekf{
+    font-size : 18px;
+    max-width : 50px;
+    min-height: 50px;
+    background-color: #3500D3;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-family: Candara;
+    border-radius: 25%;
+}
+#seekf:hover{
+    background-color: blue;
+}
+#Resume{
+    font-size : 18px;
+    min-width : 50px;
+    min-height: 50px;
+    background-color: #3500D3;
+    color: white;
+    border: none;
+    border-radius: 25%;
+    font-family: Candara;
+    padding: 0px;
+}
+#Resume:hover{
+    background-color: blue;
+}
+#filebtn{
+    font-size : 12px;
+    background-color: #3500D3;
+    min-width: 100px;
+    min-height: 20px;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px;
+    font-family: Candara;
+}
+#filebtn:hover{
+    background-color: blue;
+}
+#txt1{
+    font-size: 30px;
+    font-weight: bolder;
+    min-width: 100px;
+    min-height: 50px;
+    font-family: Candara;
+    color: white;
+}
